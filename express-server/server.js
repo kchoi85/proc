@@ -74,6 +74,7 @@ const User = mongoose.model('User', userSchema);
 const restSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     name: {type: String, required: true},
+    description: {type: String, required: true}, // res desc. and store hours
     email: {
         type: String, 
         trim: true,
@@ -85,25 +86,31 @@ const restSchema = new mongoose.Schema({
     },
     menu: [{
         item: String,
-        price: String,
-        picture: String
+        details: String,
+        price: Number,
+        image: String
     }],
     phone: {type: Number, required: true},
     address: {type: String, required: true},
-    resBanner: {type: String, required: false}
+    resBanner: {type: String, required: false},
+    online: {type: Boolean, default: true}
+
 })
 const Restaurant = mongoose.model('Restaurant', restSchema);
 // ===
 const orderSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    orderNum: 0,
     restaurantId: {type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant', required: true},
     customerId:  {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    orderNum: {type: Number, default: 0},
     items: [{
         item: String,
-        quantity: String
+        quantity: Number,
+        price: Number
     }],
-    orderStatus: {type: String}
+    message: {type: String},
+    orderStatus: {type: String}, //1) Driver Pending, Driver Found, Order complete, Need Assistance
+    timestamp: {type:Date, default: Date.now}
 }) //https://masteringjs.io/tutorials/mongoose/array
 const Order = mongoose.model('Order', orderSchema);
 // ===
@@ -119,7 +126,8 @@ const drivSchema = new mongoose.Schema({
         validate: [validateEmail, 'Please fill a valid email address'],
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
-    phone: {type: Number, required: true}
+    phone: {type: Number, required: true},
+    online: {type: Boolean, default: false}
 })
 const Driver = mongoose.model('Driver', drivSchema);
 
@@ -141,7 +149,7 @@ app.use((req, res, next) => {
 * ======
 */
 app.get('/', (req, res) => {
-    Restaurant.find().exec()
+    Restaurant.find({online: true}).exec()
     .then(docs => {
         res.status(200).json({
             count: docs.length,
@@ -150,10 +158,10 @@ app.get('/', (req, res) => {
                     name: doc.name,
                     email: doc.email,
                     menu: doc.menu,
-                    resBanner: doc.resBanner,
                     phone: doc.phone,
                     address: doc.address,
-                    resBanner: doc.resBanner
+                    resBanner: doc.resBanner,
+                    online: doc.online
                 }
             })
         })
@@ -173,7 +181,7 @@ app.post('/login', async (req, res) => {
         return;
     } 
     res.status(200).json({
-        message: 'Log in successful!'
+        message: 'User Log in successful!'
     })
 })
 
@@ -253,8 +261,82 @@ app.post('/registerDriver', async (req, res) => {
     }
 })
 
+app.post('/loginDriver', async (req, res) => {
+    const { email, password } = req.body;
+
+    const driver = await Driver.findOne({email}).exec()
+    if (!driver || driver.password !== password) {
+        res.status(403).json({
+            message: 'invalid login' 
+        })
+        return;
+    } 
+    res.status(200).json({
+        message: 'Driver Log in successful!'
+    })
+})
+
+app.post('/submitOrder', async (req, res) => {
+    var orderNumDate = Date.now();
+    // Array of items
+
+    const order = new Order({
+        _id: new mongoose.Types.ObjectId(),
+        orderNum: orderNumDate,
+        restaurantId: req.body.restaurantId,
+        customerId: req.body.customerId,
+        items: req.body.items,
+        message: req.body.message,
+        orderStatus: 'Driver Pending'
+    })
+    order.save()
+        .then(result => {
+            console.log(result);
+            //increment orderNum: +1
+            res.status(200).json({
+                message: 'Order created successfully',
+                createdDriver: {
+                    _id: result._id,
+                    orderNum: result.orderNum,
+                    restaurantId: result.restaurantId,
+                    customerId: result.customerId,
+                    items: result.items,
+                    message: result.message,
+                    orderStatus: result.orderStatus,
+                }
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: err})
+        });
+})
+
+app.get('/getOrders', (req, res) => {
+    Order.find({}).exec()
+        .then(orders => {
+            res.status(200).json({
+                count: orders.length,
+                orders: orders.map(order => {
+                    return {
+                        _id: order._id,
+                        orderNum: order.orderNum,
+                        restaurantId: order.restaurantId,
+                        customerId: order.customerId,
+                        items: order.items,
+                        orderStatus: order.orderStatus,
+                        timestamp: order.timestampdoc
+                    }
+                })
+            });
+        })
+        .catch(err => res.status(500).json({error: err}))
+})
+
+
+
 // Driver submitting orderId after delivering
-app.post('/orders/:orderId', async (req, res) => {
+app.post('/completeOrder/:orderId', async (req, res) => {
     orderId = req.params.orderId;
     console.log(orderId)
     res.status(200)
@@ -299,8 +381,6 @@ app.post('/registerRestaurant', upload.single('resBanner'), async (req, res) => 
                 res.status(500).json({error: err})
             });
     }
-    
-
 })
 
 // if we reach here (after above 2 routes, means no routes were able to handle the request)
