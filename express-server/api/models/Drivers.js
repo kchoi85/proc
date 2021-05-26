@@ -20,6 +20,6 @@ const drivSchema = new mongoose.Schema({
     },
     password: {type: String, required: true},
     phone: {type: Number, required: true},
-    status: {type: String, default: 'Offline'} //online-available, online-delivering, offline
+    status: {type: String, default: 'Offline'} //Online-available, Online-delivering, Offline
 })
 module.exports = mongoose.model('Driver', drivSchema);

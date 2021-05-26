@@ -4,6 +4,8 @@ const morgan = require('morgan')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const app = express();
+//const http  = require('http')
+//const server = http.createServer(app);
 const PORT = process.env.PORT || 4000;
 // === End of Requirements config ====
 
@@ -62,3 +64,4 @@ db.once("open", () => {
 })
 
 module.exports = app;
+//module.exports = server; // for socket.io
