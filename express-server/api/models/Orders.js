@@ -17,6 +17,7 @@ const orderSchema = new mongoose.Schema({
     subtotal: {type: Number, default: 0},
     deliveryFee: {type: Number, default: 1.00},
     taxes: {type: Number, default: 0},
+    tips: {type: Number, default: 0},
     total: {type: Number, default: 0},
     
     timestamp: {type:Date, default: Date.now}
