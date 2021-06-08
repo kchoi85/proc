@@ -93,6 +93,7 @@ exports.drivers_login_driver = async (req, res) => {
 
           return res.status(200).json({
             message: "Auth successful",
+            _id: user._id,
             token: token,
           });
         }
