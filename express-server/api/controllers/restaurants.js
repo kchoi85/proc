@@ -8,6 +8,7 @@ exports.restaurants_get_resId = (req, res) => {
     .then((rest) => {
       res.status(200).json({
         _id: rest.id,
+        name: rest.name,
         email: rest.email,
         menu: rest.menu,
         phone: rest.phone,
@@ -92,4 +93,24 @@ exports.restaurants_register_restaurant = (req, res) => {
       console.log(req);
       res.status(500).json({ error: err, message: "here2" });
     });
+};
+
+//router.get('/getRestaurants/:resName', RestaurantsController.restaurants_search_resName)
+
+exports.restaurants_search_resName = async (req, res) => {
+  // https://stackoverflow.com/questions/11976692/searching-database-with-mongoose-api-and-nodejs
+  const resName = req.params.resName;
+  let regex = new RegExp(resName, "i");
+  let searchResult = await Restaurant.find({
+    $or: [{ name: regex }, { type: regex }],
+  }).exec();
+
+  // let restType = await Restaurant.find({ type: regex }).exec();
+  // implement feature like "bubble tea" -> search for type of restaurant
+  // {DEBUG} console.log(rest);
+  if (searchResult) {
+    res.status(200).json({
+      restaurantInfo: searchResult,
+    });
+  }
 };

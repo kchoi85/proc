@@ -26,19 +26,34 @@ exports.drivers_register_driver = async (req, res) => {
           password: hash,
           phone: phone,
         });
+
         driver.save().then((result) => {
           console.log(result);
+
+          const token = jwt.sign(
+            {
+              email: result.email,
+              userId: result._id,
+            },
+            process.env.JWT_KEY,
+            {
+              expiresIn: "24h",
+            }
+          );
+
           res
             .status(201)
             .json({
               message: "Driver successfuly created!",
-              createdDriver: {
-                _id: result._id,
-                name: result.name,
-                email: result.email,
-                password: result.password,
-                phone: result.phone,
-              },
+              _id: result._id,
+              token: token,
+              // createdDriver: {
+              //   _id: result._id,
+              //   name: result.name,
+              //   email: result.email,
+              //   password: result.password,
+              //   phone: result.phone,
+              // },
             })
             .catch((err) => {
               res.status(500).json({ error: err });
@@ -127,7 +142,7 @@ exports.drivers_complete_order = async (req, res) => {
     .exec()
     .then((order) => {
       order.updateOne(
-        { $set: { orderStatus: "Order-Complete" } },
+        { $set: { orderStatus: "Order-complete" } },
         (err, doc) => {
           if (err) {
             res.status(500).json({ error: err });
