@@ -9,6 +9,8 @@ const restSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   name: { type: String, required: true },
   type: { type: String, required: true }, // make it into multiple keywords?
+  rating: { type: String, required: true },
+  deliveryTime: { type: String, required: true },
   description: { type: String, required: true }, // res desc. and store hours
   email: {
     type: String,

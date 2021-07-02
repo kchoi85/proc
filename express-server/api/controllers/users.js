@@ -93,10 +93,7 @@ exports.users_login_user = async (req, res) => {
               email: user.email,
               userId: user._id,
             },
-            process.env.JWT_KEY,
-            {
-              expiresIn: "24h",
-            }
+            process.env.JWT_KEY
           );
 
           // return _id and token to client

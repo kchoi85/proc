@@ -114,6 +114,12 @@ exports.orders_get_all_orders = async (req, res) => {
             itemTotal: doc.items.length,
             timestamp: doc.timestamp,
             orderStatus: doc.orderStatus,
+            subtotal: doc.subtotal,
+            taxes: doc.taxes,
+            tips: doc.tips,
+            total: doc.total,
+            items: doc.items,
+            message: doc.message,
           });
         }
         res.status(200).json({

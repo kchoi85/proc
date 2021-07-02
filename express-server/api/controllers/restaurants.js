@@ -7,14 +7,19 @@ exports.restaurants_get_resId = (req, res) => {
     .exec()
     .then((rest) => {
       res.status(200).json({
-        _id: rest.id,
-        name: rest.name,
-        email: rest.email,
-        menu: rest.menu,
-        phone: rest.phone,
-        address: rest.address,
-        resBanner: rest.resBanner,
-        online: rest.online,
+        _id: doc._id,
+        name: doc.name,
+        type: doc.type,
+        rating: doc.rating,
+        deliveryTime: doc.deliveryTime,
+        description: doc.description,
+        email: doc.email,
+        menu: doc.menu,
+        phone: doc.phone,
+        address: doc.address,
+        resBanner: doc.resBanner,
+        rating: doc.rating,
+        online: doc.online,
       });
     })
     .catch((err) => res.status(500).json({ error: err }));
@@ -31,13 +36,15 @@ exports.restaurants_get_all = (req, res) => {
           return {
             _id: doc._id,
             name: doc.name,
+            type: doc.type,
+            rating: doc.rating,
+            deliveryTime: doc.deliveryTime,
             description: doc.description,
             email: doc.email,
             menu: doc.menu,
             phone: doc.phone,
             address: doc.address,
             resBanner: doc.resBanner,
-            type: doc.type,
             rating: doc.rating,
             online: doc.online,
           };
@@ -59,12 +66,16 @@ exports.restaurants_register_restaurant = (req, res) => {
         const restaurant = new Restaurant({
           _id: new mongoose.Types.ObjectId(),
           name: req.body.name,
+          type: req.body.type,
+          rating: req.body.rating,
+          deliveryTime: req.body.deliveryTime,
           description: req.body.description,
           email: req.body.email,
           menu: req.body.menu,
           phone: req.body.phone,
           address: req.body.address,
           resBanner: req.file.path,
+          online: req.body.online,
         });
         restaurant
           .save()
@@ -73,14 +84,18 @@ exports.restaurants_register_restaurant = (req, res) => {
             res.status(200).json({
               message: "Restaurant created successfully",
               createdRestauratn: {
-                _id: result._id,
-                name: result.name,
-                description: result.description,
-                email: result.email,
-                menu: result.menu,
-                phone: result.phone,
-                address: result.address,
-                resBanner: result.resBanner,
+                _id: doc._id,
+                name: doc.name,
+                type: doc.type,
+                rating: doc.rating,
+                deliveryTime: doc.deliveryTime,
+                description: doc.description,
+                email: doc.email,
+                menu: doc.menu,
+                phone: doc.phone,
+                address: doc.address,
+                resBanner: doc.resBanner,
+                online: doc.online,
               },
             });
           })
@@ -99,18 +114,21 @@ exports.restaurants_register_restaurant = (req, res) => {
 
 exports.restaurants_search_resName = async (req, res) => {
   // https://stackoverflow.com/questions/11976692/searching-database-with-mongoose-api-and-nodejs
-  const resName = req.params.resName;
-  let regex = new RegExp(resName, "i");
-  let searchResult = await Restaurant.find({
-    $or: [{ name: regex }, { type: regex }],
-  }).exec();
 
-  // let restType = await Restaurant.find({ type: regex }).exec();
-  // implement feature like "bubble tea" -> search for type of restaurant
-  // {DEBUG} console.log(rest);
-  if (searchResult) {
-    res.status(200).json({
-      restaurantInfo: searchResult,
-    });
+  if (req.params.resName) {
+    let resName = req.params.resName;
+
+    resName = resName.trim();
+    let regex = new RegExp(resName, "i");
+
+    let searchResult = await Restaurant.find({
+      $or: [{ name: regex }, { type: regex }],
+    }).exec();
+
+    if (searchResult) {
+      res.status(200).json({
+        restaurantInfo: searchResult,
+      });
+    }
   }
 };
