@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="72271a1a-3d38-494b-8384-2eb21b8cbb7f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/dto" beforeDir="false" afterPath="$PROJECT_DIR$/dto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/.env" beforeDir="false" afterPath="$PROJECT_DIR$/dto/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/dto/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/dto/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/screens/AccountScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/dto/screens/AccountScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/screens/CheckOutScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/dto/screens/CheckOutScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/screens/HomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/dto/screens/HomeScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/screens/LoginScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/dto/screens/LoginScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/screens/RegisterScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/dto/screens/RegisterScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/screens/RestaurantScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/dto/screens/RestaurantScreen.js" afterDir="false" />
-    </list>
+    <list default="true" id="72271a1a-3d38-494b-8384-2eb21b8cbb7f" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

@@ -48,6 +48,9 @@ exports.users_register_user = async (req, res) => {
               _id: result._id,
               token: token,
               fullname: result.name,
+              email: result.email,
+              phone: result.phone,
+              address: result.address,
               //   createdUser: {
               //     _id: result._id,
               //     email: result.email,
@@ -102,6 +105,9 @@ exports.users_login_user = async (req, res) => {
             _id: user._id,
             token: token,
             fullname: user.name,
+            address: user.address,
+            email: user.email,
+            phone: user.phone,
           });
         }
         // otherwise,
